@@ -1,7 +1,9 @@
 function App() {
   return (
-    <div>
-      <h1>Live Cricket Score App</h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <h1 className="text-3xl font-bold text-green-600">
+        🏏 Tailwind is Working!
+      </h1>
     </div>
   );
 }
