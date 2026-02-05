@@ -1,0 +1,50 @@
+{
+  "apikey": "REDACTED",
+  "status": "success",
+  "data": [
+    {
+      "id": "c1e2ccdb-db28-4270-9018-36ef1b4c5a5a",
+      "name": "Nepal vs United Arab Emirates, 6th Match, ICC Men's T20 World Cup Warm up Matches 2026",
+      "matchType": "t20",
+      "status": "Nepal won by 7 wkts",
+      "venue": "MA Chidambaram Stadium, Chennai",
+      "date": "2026-02-03",
+      "dateTimeGMT": "2026-02-03T11:30:00",
+      "teams": ["Nepal", "United Arab Emirates"],
+      "teamInfo": [
+        {
+          "name": "Nepal",
+          "shortname": "NEP",
+          "img": "https://g.cricapi.com/iapi/54-637877084789981539.webp?w=48"
+        },
+        {
+          "name": "United Arab Emirates",
+          "shortname": "UAE",
+          "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+        }
+      ],
+      "score": [
+        {
+          "r": 145,
+          "w": 6,
+          "o": 20,
+          "inning": "United Arab Emirates Inning 1"
+        },
+        {
+          "r": 148,
+          "w": 3,
+          "o": 17,
+          "inning": "Nepal Inning 1"
+        }
+      ],
+      "matchStarted": true,
+      "matchEnded": true
+    }
+  ],
+  "info": {
+    "hitsToday": 1,
+    "hitsUsed": 1,
+    "hitsLimit": 100,
+    "cache": 1
+  }
+}
