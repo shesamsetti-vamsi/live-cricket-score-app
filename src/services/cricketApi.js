@@ -1,19 +1,25 @@
+import sampleData from "../utils/sampleResponse.json";
+
 const BASE_URL = "https://api.cricapi.com/v1";
 
-export const fetchLiveMatches = async () => {
+export async function fetchLiveMatches() {
   try {
     const res = await fetch(
       `${BASE_URL}/currentMatches?apikey=${import.meta.env.VITE_CRICKET_API_KEY}`
     );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch matches");
+    const json = await res.json();
+
+    // If API returns valid matches
+    if (Array.isArray(json?.data) && json.data.length > 0) {
+      return json.data;
     }
 
-    const data = await res.json();
-    return data.data;
+    // 🔁 Fallback to sample data
+    console.warn("API empty — using sample data");
+    return sampleData.data;
   } catch (error) {
-    console.error("API Error:", error);
-    throw error;
+    console.error("API failed — using sample data");
+    return sampleData.data;
   }
-};
+}

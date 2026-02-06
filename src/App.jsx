@@ -1,39 +1,25 @@
 import { useEffect, useState } from "react";
 import { fetchLiveMatches } from "./services/cricketApi";
+import MatchCard from "./components/MatchCard";
 
 function App() {
   const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadMatches = async () => {
-      try {
-        const data = await fetchLiveMatches();
-        setMatches(data);
-      } catch (err) {
-        setError("Unable to load matches");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadMatches();
+    fetchLiveMatches().then((data) => setMatches(data));
   }, []);
 
-  if (loading) return <p className="p-4">Loading matches...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Live Matches</h1>
-      <ul>
-        {matches.map((match) => (
-          <li key={match.id} className="mb-2">
-            {match.name}
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-6xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">Live Matches</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {matches.map((match) => (
+            <MatchCard key={match.id} match={match} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
