@@ -1,22 +1,24 @@
 import { useParams, Link } from "react-router-dom";
-import { fetchLiveMatches } from "../services/cricketApi";
-import { useEffect, useState } from "react";
+import { useMatches } from "../context/MatchContext";
 
 function MatchDetails() {
   const { id } = useParams();
-  const [match, setMatch] = useState(null);
+  const { matches, loading } = useMatches();
 
-  useEffect(() => {
-    fetchLiveMatches().then((matches) => {
-      const found = matches.find((m) => m.id === id);
-      setMatch(found);
-    });
-  }, [id]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading match...
+      </div>
+    );
+  }
+
+  const match = matches.find((m) => m.id === id);
 
   if (!match) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
-        <p className="text-gray-500">Match not found</p>
+        <p className="text-gray-500 mb-2">Match not found</p>
         <Link to="/" className="text-indigo-600 underline">
           Go back
         </Link>
@@ -37,14 +39,18 @@ function MatchDetails() {
           {match.teams?.[0]} VS {match.teams?.[1]}
         </div>
 
-        {match.score?.map((s, idx) => (
-          <div key={idx} className="flex justify-between">
-            <span>{s.inning}</span>
-            <span className="font-semibold">
-              {s.r}/{s.w} ({s.o} ov)
-            </span>
-          </div>
-        ))}
+        {match.score?.length > 0 ? (
+          match.score.map((s, idx) => (
+            <div key={idx} className="flex justify-between">
+              <span>{s.inning}</span>
+              <span className="font-semibold">
+                {s.r}/{s.w} ({s.o} ov)
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 text-sm">Match not started yet</p>
+        )}
 
         <p className="text-sm text-gray-500">📍 {match.venue}</p>
         <p className="text-lg font-semibold text-indigo-600">
