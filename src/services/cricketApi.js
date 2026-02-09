@@ -1,25 +1,56 @@
-import sampleData from "../utils/sampleResponse.json";
-
+const API_KEY = import.meta.env.VITE_CRIC_API_KEY;
 const BASE_URL = "https://api.cricapi.com/v1";
 
-export async function fetchLiveMatches() {
+if (!API_KEY) {
+  console.error("❌ VITE_CRIC_API_KEY is missing");
+}
+
+/**
+ * Fetch matches (free-tier safe)
+ */
+export const fetchLiveMatches = async () => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/currentMatches?apikey=${import.meta.env.VITE_CRICKET_API_KEY}`
+    const response = await fetch(
+      `${BASE_URL}/matches?apikey=${API_KEY}&offset=0`
     );
 
-    const json = await res.json();
-
-    // If API returns valid matches
-    if (Array.isArray(json?.data) && json.data.length > 0) {
-      return json.data;
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
     }
 
-    // 🔁 Fallback to sample data
-    console.warn("API empty — using sample data");
-    return sampleData.data;
+    const result = await response.json();
+    console.log("📦 MATCHES API RESPONSE:", result);
+
+    if (result.status !== "success") {
+      throw new Error(result.message || "API returned failure");
+    }
+
+    return Array.isArray(result.data) ? result.data : [];
   } catch (error) {
-    console.error("API failed — using sample data");
-    return sampleData.data;
+    console.error("❌ fetchLiveMatches failed:", error);
+    throw error;
   }
-}
+};
+
+export const fetchMatchDetails = async (matchId) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/match_info?apikey=${API_KEY}&id=${matchId}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (result.status !== "success") {
+      throw new Error("Failed to fetch match details");
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("❌ fetchMatchDetails failed:", error);
+    throw error;
+  }
+};

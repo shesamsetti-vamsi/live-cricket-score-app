@@ -3,12 +3,10 @@ import MatchCard from "../components/MatchCard";
 import { useMatches } from "../context/MatchContext";
 
 function Home() {
-  const { matches, loading } = useMatches();
-
+  const { matches, loading, error } = useMatches();
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500">
@@ -17,25 +15,69 @@ function Home() {
     );
   }
 
-  // Filter by match status
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
+  }
+
+  const now = new Date();
+
+  /**
+   * Robust match classification
+   */
+  const getMatchType = (match) => {
+    const status = (match.status || "").toLowerCase();
+    const matchTime = match.dateTimeGMT
+      ? new Date(match.dateTimeGMT)
+      : null;
+
+    // Finished (most reliable)
+    if (
+      status.includes("won") ||
+      status.includes("result") ||
+      status.includes("abandoned") ||
+      status.includes("draw") ||
+      status.includes("tie") ||
+      status.includes("no result") ||
+      status.includes("complete") ||
+      status.includes("finished")
+    ) {
+      return "finished";
+    }
+
+    // Upcoming (future match time)
+    if (matchTime && matchTime > now) {
+      return "upcoming";
+    }
+
+    // Live (started but not finished)
+    if (
+      status.includes("progress") ||
+      status.includes("live") ||
+      status.includes("innings") ||
+      status.includes("day")
+    ) {
+      return "live";
+    }
+
+    return "other";
+  };
+
   const filteredMatches = matches
+    // Status filter
     .filter((match) => {
-      if (filter === "upcoming") return !match.matchStarted;
-      if (filter === "live") return match.matchStarted && !match.matchEnded;
-      if (filter === "finished") return match.matchEnded;
-      return true;
+      if (filter === "all") return true;
+      return getMatchType(match) === filter;
     })
-    // Search by team name
+    // Search filter
     .filter((match) =>
       match.teams?.some((team) =>
         team.toLowerCase().includes(query.toLowerCase())
       )
     );
-
-  // Sort by date (latest first)
-  const sortedMatches = [...filteredMatches].sort(
-    (a, b) => new Date(b.dateTimeGMT) - new Date(a.dateTimeGMT)
-  );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -69,11 +111,11 @@ function Home() {
         </div>
 
         {/* Match Grid */}
-        {sortedMatches.length === 0 ? (
+        {filteredMatches.length === 0 ? (
           <p className="text-gray-500">No matches found</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedMatches.map((match) => (
+            {filteredMatches.map((match) => (
               <MatchCard key={match.id} match={match} />
             ))}
           </div>

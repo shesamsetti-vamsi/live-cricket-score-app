@@ -1,64 +1,74 @@
-import { useParams, Link } from "react-router-dom";
-import { useMatches } from "../context/MatchContext";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import MatchStatsSummary from "../components/MatchStatsSummary";
+import { fetchMatchDetails } from "../services/cricketApi";
 
-function MatchDetails() {
+const MatchDetails = () => {
   const { id } = useParams();
-  const { matches, loading } = useMatches();
+  const [match, setMatch] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadMatchDetails = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchMatchDetails(id);
+        setMatch(data);
+      } catch (err) {
+        setError("Failed to load match details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMatchDetails();
+  }, [id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        Loading match...
+      <div className="p-6 text-center text-gray-400">
+        Loading match details...
       </div>
     );
   }
 
-  const match = matches.find((m) => m.id === id);
-
-  if (!match) {
+  if (error || !match) {
     return (
-      <div className="min-h-screen bg-gray-100 p-6">
-        <p className="text-gray-500 mb-2">Match not found</p>
-        <Link to="/" className="text-indigo-600 underline">
-          Go back
-        </Link>
+      <div className="p-6 text-center text-red-400">
+        {error || "Match not found"}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <Link to="/" className="text-indigo-600 underline mb-4 inline-block">
-        ← Back to matches
-      </Link>
-
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 space-y-4">
-        <h1 className="text-xl font-bold">{match.name}</h1>
-
-        <div className="text-center font-semibold bg-gray-50 rounded-lg py-2">
-          {match.teams?.[0]} VS {match.teams?.[1]}
-        </div>
-
-        {match.score?.length > 0 ? (
-          match.score.map((s, idx) => (
-            <div key={idx} className="flex justify-between">
-              <span>{s.inning}</span>
-              <span className="font-semibold">
-                {s.r}/{s.w} ({s.o} ov)
-              </span>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-sm">Match not started yet</p>
-        )}
-
-        <p className="text-sm text-gray-500">📍 {match.venue}</p>
-        <p className="text-lg font-semibold text-indigo-600">
+    <div className="p-4 md:p-6 text-white">
+      {/* Match Header */}
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold">
+          {match.name}
+        </h1>
+        <p className="text-gray-400">
           {match.status}
         </p>
       </div>
+
+      {/* Match Info */}
+      <div className="mb-6 rounded-lg bg-gray-800 p-4 border border-gray-700">
+        <p>
+          <span className="text-gray-400">Venue:</span>{" "}
+          {match.venue || "N/A"}
+        </p>
+        <p>
+          <span className="text-gray-400">Date:</span>{" "}
+          {match.date || "N/A"}
+        </p>
+      </div>
+
+      {/* Day 8 Feature: Match Stats Summary */}
+      <MatchStatsSummary match={match} />
     </div>
   );
-}
+};
 
 export default MatchDetails;
