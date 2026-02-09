@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import MatchStatsSummary from "../components/MatchStatsSummary";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchMatchDetails } from "../services/cricketApi";
+import MatchStatsSummary from "../components/MatchStatsSummary";
 
 const MatchDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,7 +18,7 @@ const MatchDetails = () => {
         const data = await fetchMatchDetails(id);
         setMatch(data);
       } catch (err) {
-        setError("Failed to load match details.");
+        setError("Failed to load match details");
       } finally {
         setLoading(false);
       }
@@ -27,7 +29,7 @@ const MatchDetails = () => {
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-400">
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
         Loading match details...
       </div>
     );
@@ -35,38 +37,43 @@ const MatchDetails = () => {
 
   if (error || !match) {
     return (
-      <div className="p-6 text-center text-red-400">
+      <div className="min-h-screen flex items-center justify-center text-red-500">
         {error || "Match not found"}
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 text-white">
-      {/* Match Header */}
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold">
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Back / Home Buttons */}
+        <div className="mb-4 flex gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+          >
+            ← Back
+          </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 text-sm"
+          >
+            Home
+          </button>
+        </div>
+
+        {/* Match Header */}
+        <h1 className="text-2xl font-bold mb-1">
           {match.name}
         </h1>
-        <p className="text-gray-400">
-          {match.status}
+        <p className="text-gray-600 mb-4">
+          {match.venue}
         </p>
-      </div>
 
-      {/* Match Info */}
-      <div className="mb-6 rounded-lg bg-gray-800 p-4 border border-gray-700">
-        <p>
-          <span className="text-gray-400">Venue:</span>{" "}
-          {match.venue || "N/A"}
-        </p>
-        <p>
-          <span className="text-gray-400">Date:</span>{" "}
-          {match.date || "N/A"}
-        </p>
+        {/* Match Stats */}
+        <MatchStatsSummary match={match} />
       </div>
-
-      {/* Day 8 Feature: Match Stats Summary */}
-      <MatchStatsSummary match={match} />
     </div>
   );
 };

@@ -1,57 +1,58 @@
 import React from "react";
 
 const MatchStatsSummary = ({ match }) => {
-  if (!match) {
-    return null;
-  }
+  if (!match) return null;
 
-  const score = match.score || [];
-  const teams = match.teams || [];
+  const { score, tossWinner, tossChoice, status } = match;
 
   return (
-    <div className="mt-6 space-y-6">
-      {/* Section Title */}
-      <h2 className="text-xl font-semibold text-white">
-        Match Statistics
-      </h2>
+    <div className="mt-6 rounded-lg bg-white p-6 shadow">
+      <h2 className="text-xl font-semibold mb-4">Match Statistics</h2>
 
-      {/* Innings Summary */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {score.length > 0 ? (
+      {/* Toss Info */}
+      {tossWinner && (
+        <p className="text-gray-700 mb-2">
+          <strong>Toss:</strong> {tossWinner} chose to {tossChoice}
+        </p>
+      )}
+
+      {/* Result */}
+      {status && (
+        <p className="text-gray-700 mb-4">
+          <strong>Result:</strong> {status}
+        </p>
+      )}
+
+      {/* Innings Scorecards */}
+      <div className="space-y-4">
+        {Array.isArray(score) && score.length > 0 ? (
           score.map((inning, index) => (
             <div
               key={index}
-              className="rounded-lg bg-gray-800 p-4 border border-gray-700"
+              className="border rounded-lg p-4 bg-gray-50"
             >
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-600">
                 {inning.inning}
               </p>
-              <p className="text-lg font-bold text-white">
-                {inning.r}/{inning.w} ({inning.o} overs)
+              <p className="text-lg font-bold">
+                {inning.r}/{inning.w}
+                <span className="text-sm font-normal text-gray-600">
+                  {" "}
+                  ({inning.o} overs)
+                </span>
               </p>
             </div>
           ))
         ) : (
-          <p className="text-gray-400">
-            Score details not available.
+          <p className="text-gray-500">
+            Scorecard not available for this match.
           </p>
         )}
       </div>
 
-      {/* Teams Info */}
-      <div className="rounded-lg bg-gray-800 p-4 border border-gray-700">
-        <h3 className="mb-2 text-lg font-medium text-white">
-          Teams
-        </h3>
-        {teams.length > 0 ? (
-          <ul className="list-disc list-inside text-gray-300">
-            {teams.map((team, idx) => (
-              <li key={idx}>{team}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-400">Team data unavailable.</p>
-        )}
+      {/* Player Stats Notice */}
+      <div className="mt-6 text-sm text-gray-500">
+        Detailed player statistics are not available on the free API tier.
       </div>
     </div>
   );
