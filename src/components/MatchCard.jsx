@@ -1,60 +1,38 @@
 import { useNavigate } from "react-router-dom";
 
-function MatchCard({ match }) {
+const MatchCard = ({ match }) => {
   const navigate = useNavigate();
-
-  let label = "Upcoming";
-  let badgeColor = "bg-blue-500";
-
-  if (match.matchStarted && !match.matchEnded) {
-    label = "Live";
-    badgeColor = "bg-green-600";
-  }
-
-  if (match.matchEnded) {
-    label = "Finished";
-    badgeColor = "bg-gray-600";
-  }
 
   return (
     <div
       onClick={() => navigate(`/match/${match.id}`)}
-      className="bg-white rounded-xl shadow-md p-5 space-y-4 hover:shadow-lg transition cursor-pointer"
+      className="bg-white rounded-xl shadow hover:shadow-md transition cursor-pointer p-4 flex flex-col justify-between"
     >
-      <div className="flex justify-between items-start">
-        <h2 className="text-sm font-semibold max-w-[80%]">
+      <div>
+        <h2 className="text-lg font-semibold mb-1 break-words">
           {match.name}
         </h2>
-        <span
-          className={`text-white text-xs px-3 py-1 rounded-full ${badgeColor}`}
-        >
-          {label}
-        </span>
+
+        <p className="text-sm text-gray-500 mb-2">
+          {match.venue}
+        </p>
+
+        <p className="text-sm font-medium text-indigo-600">
+          {match.status}
+        </p>
       </div>
 
-      <div className="text-center font-semibold text-sm bg-gray-50 rounded-lg py-2">
-        {match.teams?.[0]}{" "}
-        <span className="text-gray-400">VS</span>{" "}
-        {match.teams?.[1]}
-      </div>
-
-      {match.score?.length > 0 && (
-        <div className="space-y-1 text-sm">
-          {match.score.map((s, idx) => (
-            <div key={idx} className="flex justify-between">
-              <span>{s.inning}</span>
-              <span className="font-semibold">
-                {s.r}/{s.w} ({s.o} ov)
-              </span>
-            </div>
+      {Array.isArray(match.score) && match.score.length > 0 && (
+        <div className="mt-3 text-sm text-gray-700">
+          {match.score.map((inning, index) => (
+            <p key={index}>
+              {inning.inning}: {inning.r}/{inning.w} ({inning.o} ov)
+            </p>
           ))}
         </div>
       )}
-
-      <p className="text-xs text-gray-500">📍 {match.venue}</p>
-      <p className="text-sm font-semibold text-indigo-600">{match.status}</p>
     </div>
   );
-}
+};
 
 export default MatchCard;

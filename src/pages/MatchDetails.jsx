@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchMatchDetails } from "../services/cricketApi";
 import MatchStatsSummary from "../components/MatchStatsSummary";
+import MatchEventsTimeline from "../components/MatchEventsTimeline";
 
 const MatchDetails = () => {
   const { id } = useParams();
@@ -44,10 +45,9 @@ const MatchDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Back / Home Buttons */}
-        <div className="mb-4 flex gap-3">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-wrap gap-3 mb-6">
           <button
             onClick={() => navigate(-1)}
             className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
@@ -63,16 +63,16 @@ const MatchDetails = () => {
           </button>
         </div>
 
-        {/* Match Header */}
-        <h1 className="text-2xl font-bold mb-1">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2 break-words">
           {match.name}
         </h1>
-        <p className="text-gray-600 mb-4">
+
+        <p className="text-gray-600 mb-6">
           {match.venue}
         </p>
 
-        {/* Match Stats */}
         <MatchStatsSummary match={match} />
+        <MatchEventsTimeline match={match} />
       </div>
     </div>
   );
