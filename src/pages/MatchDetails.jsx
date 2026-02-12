@@ -12,19 +12,20 @@ const MatchDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadMatchDetails = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchMatchDetails(id);
-        setMatch(data);
-      } catch (err) {
-        setError("Failed to load match details");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadMatchDetails = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchMatchDetails(id);
+      setMatch(data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load match details.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadMatchDetails();
   }, [id]);
 
@@ -36,12 +37,22 @@ const MatchDetails = () => {
     );
   }
 
-  if (error || !match) {
+  if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        {error || "Match not found"}
+      <div className="min-h-screen flex flex-col items-center justify-center text-red-500 gap-4">
+        <p>{error}</p>
+        <button
+          onClick={loadMatchDetails}
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Retry
+        </button>
       </div>
     );
+  }
+
+  if (!match) {
+    return null;
   }
 
   return (
@@ -50,20 +61,20 @@ const MatchDetails = () => {
         <div className="flex flex-wrap gap-3 mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+            className="px-4 py-2 rounded bg-gray-200"
           >
             ← Back
           </button>
 
           <button
             onClick={() => navigate("/")}
-            className="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 text-sm"
+            className="px-4 py-2 rounded bg-indigo-600 text-white"
           >
             Home
           </button>
         </div>
 
-        <h1 className="text-xl sm:text-2xl font-bold mb-2 break-words">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2">
           {match.name}
         </h1>
 

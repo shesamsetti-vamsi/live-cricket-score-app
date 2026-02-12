@@ -1,31 +1,15 @@
 import { useState } from "react";
 import MatchCard from "../components/MatchCard";
+import SkeletonCard from "../components/SkeletonCard";
 import { useMatches } from "../context/MatchContext";
 
 function Home() {
-  const { matches, loading, error } = useMatches();
+  const { matches, loading, error, retry } = useMatches();
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500 text-center px-4">
-        Loading matches...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-500 text-center px-4">
-        {error}
-      </div>
-    );
-  }
-
   const getMatchType = (match) => {
     const status = (match.status || "").toLowerCase();
-
     if (status.includes("won") || status.includes("result")) return "finished";
     if (!match.matchStarted) return "upcoming";
     if (match.matchStarted && !match.matchEnded) return "live";
@@ -50,6 +34,19 @@ function Home() {
           Live Matches
         </h1>
 
+        {/* Error UI */}
+        {error && (
+          <div className="mb-6 bg-red-100 text-red-700 p-4 rounded-lg flex justify-between items-center">
+            <span>{error}</span>
+            <button
+              onClick={retry}
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {/* Search */}
         <input
           type="text"
@@ -65,19 +62,25 @@ function Home() {
             <button
               key={type}
               onClick={() => setFilter(type)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+              className={`px-4 py-2 rounded-full text-sm font-medium ${
                 filter === type
                   ? "bg-indigo-600 text-white"
-                  : "bg-white text-gray-600 border hover:bg-gray-100"
+                  : "bg-white text-gray-600 border"
               }`}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {type}
             </button>
           ))}
         </div>
 
-        {/* Match Grid */}
-        {filteredMatches.length === 0 ? (
+        {/* Loading Skeleton */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </div>
+        ) : filteredMatches.length === 0 ? (
           <p className="text-gray-500 text-center">
             No matches found
           </p>

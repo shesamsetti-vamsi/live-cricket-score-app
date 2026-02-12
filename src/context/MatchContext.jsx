@@ -8,26 +8,28 @@ export const MatchProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadMatches = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchLiveMatches();
-        setMatches(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message || "Failed to load matches");
-        setMatches([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadMatches = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchLiveMatches();
+      setMatches(data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load matches. Please try again.");
+      setMatches([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadMatches();
   }, []);
 
   return (
-    <MatchContext.Provider value={{ matches, loading, error }}>
+    <MatchContext.Provider
+      value={{ matches, loading, error, retry: loadMatches }}
+    >
       {children}
     </MatchContext.Provider>
   );
