@@ -16,15 +16,17 @@ Deployed to production using **Vercel**.
 
 ## 🚀 Project Overview
 
-The Live Cricket Score App allows users to:
+The Live Cricket Score App enables users to track live cricket matches with a clean, responsive interface and production-ready architecture.
+
+Users can:
 
 - 📡 View Live, Upcoming, and Finished matches  
 - 🔍 Search matches by team name  
 - 🎯 Filter matches by status  
-- 📊 View detailed match statistics  
-- 🕒 See a match events timeline  
+- 📊 View match-level statistics  
+- 🕒 See a structured match events timeline  
 - ⭐ Pin favorite matches (persistent storage)  
-- 📱 Use the app seamlessly on mobile, tablet, and desktop  
+- 📱 Access a fully responsive UI across devices  
 
 This project was developed using a structured milestone-based approach emphasizing production-ready UI, clean architecture, and API-aware engineering principles.
 
@@ -32,11 +34,13 @@ This project was developed using a structured milestone-based approach emphasizi
 
 ## ✨ Key Highlights
 
-- Clean API integration with defensive error handling  
+- Clean CricAPI integration with defensive error handling  
 - Custom hooks for reusable data-fetching logic  
+- Utility-based match classification system  
 - Persistent pinned matches using `localStorage`  
-- Production-ready deployment with secure environment configuration  
+- Skeleton loaders and retry-based error UI  
 - Fully responsive UI built with Tailwind CSS  
+- Production deployment using Vercel with environment configuration  
 
 ---
 
@@ -71,35 +75,36 @@ This project was developed using a structured milestone-based approach emphasizi
 - Match name and venue  
 - Toss winner and decision  
 - Match result  
+- Innings-wise score summaries  
 - Navigation (Back & Home buttons)  
 - Clean responsive layout  
 
 ---
 
 ### 🟢 3. Match Statistics
-- Innings-wise score summary  
+- Innings-level score breakdown  
 - Runs / Wickets / Overs  
 - Toss & result summary  
-- Graceful fallback if scorecard unavailable  
+- Graceful fallback when score data is unavailable  
 
-⚠️ Note: Player-level stats are not included due to CricAPI free-tier limitations.
+⚠️ Player-level statistics and ball-by-ball commentary are not included due to CricAPI free-tier limitations.
 
 ---
 
 ### 🟢 4. Match Events Timeline
 - Match scheduled time  
-- Toss result event  
+- Toss event  
 - Innings summaries  
 - Final match result  
 
-Built without ball-by-ball APIs.
+Built without requiring paid API endpoints.
 
 ---
 
 ### 🟢 5. Pinned Matches (Bonus Feature)
 - Star icon to pin matches  
 - Persistent storage using `localStorage`  
-- Dedicated pinned section on home page  
+- Dedicated pinned section  
 - Toggle pin/unpin functionality  
 
 ---
@@ -108,24 +113,25 @@ Built without ball-by-ball APIs.
 - Skeleton loading states  
 - Error UI with retry buttons  
 - Clean empty states  
-- Responsive layout polish  
+- Mobile-first responsive design  
 
 ---
 
-### 🟢 7. Code Quality Improvements
+### 🟢 7. Code Quality & Architecture
 - Custom hook: `useMatchDetails`  
-- Utility-based match classification  
+- Utility-based match classification (`matchUtils.js`)  
 - Clean folder structure  
 - Separation of concerns  
 - Reusable components  
+- Production-ready structure  
 
 ---
 
-### 🟢 8. Deployment (Day 14)
-- Production build optimized  
-- Environment variable configuration  
-- Deployed to Vercel  
-- Publicly accessible URL  
+### 🟢 8. Deployment (v1.0.0)
+- Optimized Vite production build  
+- Secure environment variable configuration  
+- Live deployment via Vercel  
+- Public production URL  
 
 ---
 
@@ -204,26 +210,27 @@ npm run build
 ### API-Aware Design
 
 The CricAPI free tier does not provide:
+
 - Ball-by-ball commentary  
 - Player-level scorecards  
 
-Instead of faking data, the app:
+Instead of simulating unavailable data, the app:
 
 - Uses innings-level summaries  
-- Displays available match-level statistics  
-- Gracefully handles missing fields  
+- Displays only reliable API fields  
+- Handles missing data gracefully  
 
 This ensures reliability, correctness, and production stability.
 
 ---
 
-### Architecture
+### Architecture Principles
 
-- Custom hooks for data fetching  
-- Utility functions for classification logic  
+- Reusable custom hooks for clean data logic  
+- Utility-based classification for maintainability  
 - Context API for global state management  
-- Persistent local storage for pinned matches  
-- Clean separation of logic and UI  
+- Persistent local storage for enhanced UX  
+- Clear separation between UI and business logic  
 
 ---
 
@@ -240,7 +247,7 @@ Includes:
 - Responsive grid layout  
 - Adaptive typography  
 - Clean spacing  
-- Mobile-friendly interactions  
+- Touch-friendly interactions  
 
 ---
 
@@ -267,11 +274,13 @@ GitHub: https://github.com/shesamsetti-vamsi
 MIT License  
 
 ---
-# 🏁 Project Status (Day 14)
+
+# 🎉 Project Status
 
 ✅ Core Features Complete  
 ✅ Bonus Feature Implemented  
 ✅ Code Refactored  
 ✅ Production Deployment Complete  
+✅ Versioned Release (v1.0.0)  
 
-🚀 Ready for Final GitHub Polish (Day 15)
+🚀 **Project Completed — Production Ready**
