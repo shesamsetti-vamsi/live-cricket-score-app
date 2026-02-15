@@ -267,7 +267,6 @@ GitHub: https://github.com/shesamsetti-vamsi
 MIT License  
 
 ---
-
 # 🏁 Project Status (Day 14)
 
 ✅ Core Features Complete  
